@@ -1,0 +1,878 @@
+@charset "utf-8";
+/* CSS Document */
+/*参考google实现
+光标选择块，分了这么几个功能
+，
+2活动单元格
+3选择区域
+*/
+/*1选择框容器*/
+
+.divSelObjs {
+	border-style:none;
+	overflow:visible;
+	position:absolute;
+	z-index:1000;
+}
+@media print{
+	.divSelObjs {
+	display:none;
+}
+}
+/*活动单元格*/
+.divActiveCell {
+	/*-moz-box-sizing:border-box;*/
+	border:2px solid #3366CC;
+	font-size:1pt;
+	position:absolute;
+	z-index:1001;
+}
+/*选中的区域*/
+.divSelection {
+	-moz-box-sizing:border-box;
+	background-color:#3366CC;
+	border-style:none;
+	border-width:0;
+	font-size:1pt;
+	opacity:0.2;
+	position:absolute;
+	z-index:1000;
+}
+/*未知*/
+.divFormuSelect {
+	-moz-box-sizing:border-box;
+	background-color:#008000;
+	border-style:none;
+	border-width:0;
+	font-size:1pt;
+	opacity:0.2;
+	position:absolute;
+	z-index:1001;
+}
+/*复制区域，当复制有的时候高亮*/
+.divCopySelection {
+	line-height:0;
+}
+/*拖动剪贴区域*/
+.divDropSelection {
+	-moz-box-sizing:border-box;
+	border:2px solid #777777;
+	font-size:1pt;
+	position:absolute;
+	z-index:1010;
+}
+/*拖拉块*/
+.divAutoFillHandle, .divHiddenAutoFillHandle {
+	background-color:#3366CC;
+	border:2px solid white;
+	cursor:crosshair;
+	font-size:1pt;
+	height:5px;
+	left:0;
+	position:absolute;
+	top:0;
+	width:5px;
+	z-index:1007;
+}
+/*拖动选择的时候出现*/
+
+.divSelectionDragDrop {
+	-moz-box-sizing:border-box;
+	background-color:#777777;
+	border:2px solid #3366CC;
+	font-size:1pt;
+	opacity:0.2;
+	position:absolute;
+	z-index:1005;
+}
+.divAutoFillSelection {
+	-moz-box-sizing:border-box;
+	border:2px dashed gray;
+	font-size:1pt;
+	position:absolute;
+	z-index:10005;
+}
+/*编辑框*/
+.editBoxWrapper {
+	border:0 none;
+	overflow:auto;
+	padding-bottom:0;
+	padding-top:0;
+	position:absolute;
+	overflow:hidden;
+}
+.editBox {
+	border-color:#3063C9 #A5C4FF #A5C4FF #3063C9;
+	border-style:solid;
+	border-width:2px;
+	overflow:auto;
+	padding:0 3px;
+	position:absolute;
+	/*-moz-box-sizing:border-box;*/
+}
+
+/* CSS Document */
+#cell-editor{
+	border:1px dotted red;
+}
+table{
+	/*background-color:#bbb;*/
+}
+td.editable{
+/*	background-color:#fff;	*/
+}
+
+
+
+
+
+body {
+	font-family: "宋体", "lucida Grande", verdana, lucida, Arial, helvetica, sans-serif;
+	font-size:9pt;
+}
+.right{
+text-align:right;
+}
+p.right
+{
+text-align:right;
+}
+p.left{
+text-align:left;
+text-indent:0;
+}
+
+
+.center{
+text-align:center;
+text-indent:0;
+}
+.underLine{
+text-decoration:underline;
+}
+.fangSong, fangSong p {
+	font-family:  "仿宋_GB2312", "华文仿宋", "方正仿宋", "方正仿宋_GBK", "楷体_GB2312";
+}
+.kaiTi,.kaiTi p{
+	font-family:  "楷体_GB2312", "方正楷体_GBK", "华文楷体","方正楷体";
+}
+.xiaoBiao,xiaoBiao p {
+	font-family: "方正小标宋简体","方正小标宋_GBK", "黑体";
+}
+p, td, th {
+	/*font-size:14pt;*/
+	/*text-align:justify;
+	text-justify:inter-ideograph ;*/
+
+}
+p {
+	
+}
+/*页面标题*/
+h1
+{
+	font-size:18pt;
+	font-family: "方正小标宋简体","方正小标宋_GBK", "黑体";
+	text-align:center;
+	font-weight:normal;
+	line-height:1.75;
+}
+h2
+{
+	font-family: "宋体";
+	font-size:18pt;
+	line-height:1.5;
+	margin-bottom: 9pt;
+	
+}
+
+h2.xiaobiao
+{
+	font-family: "方正小标宋简体","方正小标宋_GBK", "黑体";
+}
+/**
+页面分割容器，每一个.page后都会换页
+*/
+.page
+{
+	width:16.2cm;
+	margin:auto;
+	page-break-after:always;
+}
+
+.footSign
+{
+	font-family: "宋体";
+	font-weight:bold;
+	font-size:16pt;
+	line-height:1.75;
+	text-align:right;
+
+}
+
+.cover {
+font-size:16pt;
+}
+.cover h1
+{
+	font-size:24pt;
+	line-height:3;
+}
+.cover .footSign
+{
+	font-family: "宋体";
+	font-weight:bold;
+	font-size:18pt;
+	line-height:1.75;
+	text-align:center;
+	word-spacing:+2pt;
+	letter-spacing:+2pt;
+
+}
+.cover .signList
+{
+	font-size:18pt;
+	margin:auto;
+	line-height:1.75;
+}
+table{
+	border-collapse:collapse;
+	/*border:1pt solid black;*/
+}
+table td,table th{
+	/*
+	border-left-color:#f0f0f0;
+	border-top-color:#f0f0f0;
+	border-right:0.5pt solid #000000;
+	border-bottom:0.5pt solid #000000;*/
+}
+
+
+
+table.single th{
+text-align:center;
+}
+table.single th,table.single th{
+line-height:1.75;
+}
+
+
+
+
+@page A4
+{
+	size:A4;
+	marks:none;
+	margin:2.5cm 2.6cm 1.92cm 2.6cm ;
+	
+	/*@bottom-left-corner {
+		content: "Bottom Left Corner";
+		border: thin solid;
+		}
+	@bottom-left {
+		content: "Bottom Left";
+		border: thin solid;
+		}
+	@bottom-center {
+		content: "Bottom Center";
+		border: thin solid;
+		}
+	@bottom-right {
+		content: "Bottom Right";
+		border: thin solid;
+		}
+	@bottom-right-corner {
+		content: "Bottom Right Corner";
+		border: thin solid;
+		}*/
+}
+
+body{
+	
+	overflow:visible;
+/*width:21cm;*/
+}
+
+/*预览用的样式*/
+.page
+{
+	/*	width:21cm;*/
+	/*	height:29.7cm;*/
+	/*width:15.8cm;
+	margin-left:2.6cm;
+	margin-right:2.6cm;
+	
+	height:25.28cm;
+	margin-top:2.5cm;
+	margin-bottom:1.92cm;
+	border:1px solid black;
+	overflow:visible;*/
+}
+
+
+/*普通业务表格*/
+div.yeWuTableWrap
+{
+margin-left:-12pt;margin-right:-12pt;
+}
+.yeWuTable
+{
+	border:1.5pt solid black;
+	border-collapse:collapse;
+	table-layout:fixed;
+	position:static;
+	/*width: 620px;*/
+	empty-cells:hide;
+}
+.yeWuTable th
+{
+	border-left-color:#f0f0f0;
+	border-top-color:#f0f0f0;
+	border-right:0.5pt solid #000000;
+	border-bottom:0.5pt solid #000000;
+	font-weight:bold;
+	vertical-align:middle;
+	text-align: center;
+	line-height:1;
+}
+.yeWuTable td
+{
+	border-left-color:#f0f0f0;
+	border-top-color:#f0f0f0;
+	border-right:0.5pt solid #000000;
+	border-bottom:0.5pt solid #000000;
+	font-weight:normal;
+	vertical-align:middle;
+	line-height: 1;
+}
+.yeWuTable table th,.yeWuTable table td
+{
+	border:none;
+	font-weight:normal;
+	vertical-align:top;
+	
+	line-height:1;
+}
+
+
+.yeWuTable tr.first-child th,.yeWuTable tr.first-child td
+{
+	border-top:1.5pt solid black;
+}
+.yeWuTable tr td.first-child,.yeWuTable tr th.first-child
+{
+	border-left:1.5pt solid black;
+
+}
+
+.yeWuTable tr:first-child th,.yeWuTable tr:first-child td
+{
+	border-top:1.5pt solid black;
+}
+.yeWuTable tr td:first-child,.yeWuTable tr th:first-child
+{
+	border-left:1.5pt solid black;
+
+}
+.yeWuTable tr td[colspan]:first-child,.yeWuTable tr th[colspan]:first-child
+{
+	border-left:none;
+
+}
+
+
+
+.noTopBorder,.noTopBorder td,.noTopBorder tr,.noTopBorder th {
+	border-top:none;
+	
+}
+
+
+
+/*用来兼容表格的列宽的列,最好放在第一行*/
+table tr.consistentRow,table tr.consistentRow td
+{
+	border:none;
+	height:0;
+	border-right:none;
+	border:none;
+	visibility:hidden;
+	overflow:hidden;
+	line-height:0;
+}
+
+
+
+.lineHeight150,.lineHeight150 p,.lineHeight150 th,.lineHeight150 td,.lineHeight150 tr  th,.lineHeight150 tr td
+{
+	line-height:1.5;
+}
+.lineHeight120,.lineHeight120 p,.lineHeight120 th,.lineHeight120 td,.lineHeight120 tr  th,.lineHeight120 tr td
+{
+	line-height:1.2;
+}
+
+
+
+.lineHeight200,.lineHeight200 p,.lineHeight200 th,.lineHeight200 td,.lineHeight200 tr  th,.lineHeight200 tr td
+{
+	line-height:2;
+}
+
+.relax {
+	letter-spacing:18pt ;
+}
+.dateSign {
+	text-align: right;
+	padding-right: 48pt;
+}
+
+
+/*表格样式*/
+/*表格标签
+*/
+table.simpleTable{
+	font-size:12px;
+	text-align:center;
+	
+	table-layout:fixed;
+	border-collapse:separate;
+	 
+	border:1px solid #99bbe8;
+	position:relative;
+}
+/*表格头
+* thead section
+*/
+	table.simpleTable thead{
+		/*background-color:#EFEFEF;*/
+		position:relative;
+	}
+		table.simpleTable thead tr{
+			position:relative;
+			background-color:#8DDA40;
+			color:black;
+		}
+
+		/*头单元格*/
+		table.simpleTable thead tr th{
+			border-color: #AEEE5A #4B901C #4E8F1B #AEEE5A;
+			/*font */
+			text-align:center;
+			line-height:18px;
+			font-size:small;
+			font-weight:bold;
+			
+			border-width:1px;
+			border-style:solid;
+			position:relative;
+		}
+			table.simpleTable thead tr th div {
+	width: auto;
+	position: relative;
+	height: 100%;
+}
+			table.simpleTable thead tr th div.handle {
+	/*position:absolute;
+				right:0;
+				background:#000;
+				top:0;*/
+				width:7px;
+				height:100%;
+				cursor:w-resize;
+				position: absolute;
+				right: -4px;
+				z-index: 10;
+				top: 0px;
+			}
+			table.simpleTable thead tr th div.right {float:right;}
+			table.simpleTable thead tr th a{
+				margin:0 2px;
+				cursor:pointer;
+				float:left;
+				line-height:18px;
+			}
+
+			/*不同排序时的样式*/
+			table.simpleTable thead tr th.asc{
+			background-color:#b4aff1;
+			}
+			table.simpleTable thead tr th.desc{
+			background-color:#b4aff1;
+			}
+			table.simpleTable thead tr th span.asc , table.simpleTable thead tr th span.desc{
+			color:#fff;
+			display:none;
+			}
+			table.simpleTable thead tr th.asc span.asc{
+			display:inline;
+			}
+			table.simpleTable thead tr th.asc span.desc{
+			display:none;}
+			
+			table.simpleTable thead tr th.desc span.desc{
+			display:inline;
+			}
+			table.simpleTable thead tr th.desc span.asc{
+			display:none;}
+			/**/
+/*表格数据
+*tbody section
+*/
+table.simpleTable tbody{
+}
+table.simpleTable tbody th{
+border-width:1px;
+border-style:solid;
+border-color:#89B270;
+border-top:none;
+border-left:none;
+}
+table.simpleTable tbody tr td{
+	border-width:1px;
+	border-style:solid;
+	border-color:#89B270;
+	border-top:none;
+	border-left:none;
+	overflow: hidden;
+	height: 1em;
+	/*only ie 6*/
+	text-overflow : ellipsis;
+}
+table.simpleTable tr.odd {
+	background-color:#ffffff;
+}
+table.simpleTable tr.even {
+ 	background-color:#f7f7f7;
+}
+table.simpleTable tr.select{
+	background-color:#E1E1E1;
+}
+table.simpleTable tr.select:hover{
+	background-color:#DFDFDF;
+}
+table.simpleTable tbody tr:hover{
+	background-color:#f0f0f0;
+}
+table.simpleTable tbody tr td{
+	border-width:1px;
+	border-style:solid;
+	border-color:#89B270;
+	border-top:none;
+	border-left:none;
+}
+/*
+*tfoot section
+*/
+table.simpleTable tfoot tr{
+	font-size:medium;
+	line-height:2;
+}
+table.simpleTable tfoot tr td{
+	border-width:3px;
+	border-style:double;
+	border-color:#89B270;
+	/*border-top:none;
+	border-left:none;*/
+
+}
+/*
+*col section
+*
+*/
+table.simpleTable col.odd{
+}
+table.simpleTable col.even{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media print{
+	body
+	{
+	/*	padding-top:2.5cm;*/
+	}
+	.page{
+		page:'A4';
+		margin:auto;
+		overflow:visible;
+		
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+============================================================================================
+
+
+
+============================================================================================
+*/
+.table1{
+border-collapse:
+ collapse;table-layout:fixed;width:763pt
+}
+.font-s11b{
+	color:black;
+	font-size:11pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:宋体;
+	text-align:center;
+	vertical-align:middle;
+	white-space:nowrap;
+}
+.align-fs{
+	text-align:justify;text-justify:distribute-all-lines
+}
+.align-center{
+	text-align:center;
+}
+
+.solid0001{
+border-left:0.5pt solid black;
+}
+.solid0010{
+border-bottom:0.5pt solid black;
+}
+.solid0011{
+border-bottom:0.5pt solid black;
+border-left:.5pt solid black;
+}
+.solid0100{
+border-right:.5pt solid black;
+}
+.solid0101{
+border-right:.5pt solid black;
+border-left:.5pt solid black;
+}
+.solid0110{
+border-right:.5pt solid black;
+border-bottom:.5pt solid black;
+}
+.solid0111{
+border-right:.5pt solid black;
+border-bottom:.5pt solid black;
+border-left:.5pt solid black;
+}
+.solid1000{
+border-top:.5pt solid black;
+}
+.solid1001{
+border-top:.5pt solid black;
+border-left:.5pt solid black;
+}
+.solid1010{
+border-top:.5pt solid black;
+border-bottom:.5pt solid black;
+}
+.solid1011{
+border-top:.5pt solid black;
+border-bottom:.5pt solid black;
+border-left:.5pt solid black;
+}
+.solid1100{
+border-top:.5pt solid black;
+border-right:.5pt solid black;
+}
+.solid1101{
+border-top:.5pt solid black;
+border-right:.5pt solid black;
+border-left:.5pt solid black;
+}
+.solid1110{
+border-top:.5pt solid black;
+border-right:.5pt solid black;
+border-bottom:.5pt solid black;
+}
+.solid1111{ 
+border-top:.5pt solid black;
+border-right:.5pt solid black;
+border-bottom:.5pt solid black;
+border-left:.5pt solid black;
+}
+.double0001{
+border-left:.5pt solid black;
+
+}
+.double0010{
+
+border-bottom:.5pt solid black;
+
+}
+.double0100{
+
+border-right:.5pt solid black;
+
+}
+.double1000{
+border-top:.5pt solid black;
+
+}
+.top1pt{
+border-top:1pt solid black;
+}
+.right1pt{
+border-right:1pt solid black;
+}
+.bottom1pt{
+border-bottom:1pt solid black;
+}
+.left1p{
+border-left:1pt solid black;
+}
+.solidM1000{
+	border-top:1.5pt solid black;
+}
+.solidM0100{
+	border-right:1.5pt solid black;
+}
+.solidM0010{
+	border-bottom:1.5pt solid black;
+}
+.solidM0001{
+	border-left:1.5pt solid black;
+}
+
+
+@media screen {
+	/**
+	google chrome 不显示0.5pt线
+	*/
+	.solid0001{
+	border-left:1.0pt solid black;
+	}
+	.solid0010{
+	border-bottom:1.0pt solid black;
+	}
+	.solid0011{
+	border-bottom:1.0pt solid black;
+	border-left:1.0pt solid black;
+	}
+	.solid0100{
+	border-right:1.0pt solid black;
+	}
+	.solid0101{
+	border-right:1.0pt solid black;
+	border-left:1.0pt solid black;
+	}
+	.solid0110{
+	border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black;
+	}
+	.solid0111{
+	border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black;
+	border-left:1.0pt solid black;
+	}
+	.solid1000{
+	border-top:1.0pt solid black;
+	}
+	.solid1001{
+	border-top:1.0pt solid black;
+	border-left:1.0pt solid black;
+	}
+	.solid1010{
+	border-top:1.0pt solid black;
+	
+	border-bottom:1.0pt solid black;
+	
+	}
+	.solid1011{
+	border-top:1.0pt solid black;
+	border-bottom:1.0pt solid black;
+	border-left:1.0pt solid black;
+	}
+	.solid1100{
+	border-top:1.0pt solid black;
+	border-right:1.0pt solid black;
+	}
+	.solid1101{
+	border-top:1.0pt solid black;
+	border-right:1.0pt solid black;
+	
+	border-left:1.0pt solid black;
+	}
+	.solid1110{
+	border-top:1.0pt solid black;
+	border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black;
+
+	}
+	.solid1111{ 
+	border-top:1.0pt solid black;
+	border-right:1.0pt solid black;
+	border-bottom:1.0pt solid black;
+	border-left:1.0pt solid black;
+	}
+	
+	.double0001{
+	border-left-style:double;
+	border-left-width:3px ;
+	border-left-color:black;
+	
+	}
+	.double0010{
+	border-bottom-style:double;
+	border-bottom-width:3px ;
+	border-bottom-color:black;
+	
+	}
+	.double0100{
+	border-right-style:double;
+	border-right-width:3px ;
+	border-right-color:black;
+	
+	}
+	.double1000{
+	border-top-style:double;
+	border-top-width:3px ;
+	border-top-color:black;
+	}
+}
+
+/*table td {
+	padding:1px}*/
+
+.fs{
+text-align:justify;
+}
