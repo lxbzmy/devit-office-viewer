@@ -1,0 +1,93 @@
+= reademe =
+
+features:
+
+can process these format
+
+TODO
+# ShrinkToFit
+#text justify patch
+== not support current 当前无法支持的样式 ==
+
+#vertical justify
+#slash border 斜线
+#under line style double
+#dash_dot_dot dash_dot
+
+#graph
+#chart
+#olap table
+
+== support style 支持的样式 ==
+
+== Align ==
+
+
+{|
+|| align || IE6 || IE7 || chrome || FF ||comment ||
+|-
+|| left,right,center || ok || ok || ok || ok || ||
+|-
+|| justify || ok || ok || ok || ok || ||
+|-
+|| center selection(跨列居中) || ok || ok || ok || ok || ||
+|-
+|| distribute align(分散对齐)|| ok || ok || no(use justify) || no(use justify) || ||
+|-
+|| align fill (填充对齐)|| ok || ok || ok || ok || set nowrap and white-space:per ||
+|}
+
+== text rotate ==
+
+{|
+|| text rotate || IE6 || IE7,8 || chrome || FF ||comment ||
+|-
+|| -90 ,90 degree || no || no || ok(-webkit-transform) || ok(-moz-transform) || use css3 transform:rotate||
+|-
+|| text flow tb-lr || ok(writing-mode:tb-lr) || ok(writing-mode:tb-lr) || no(normal) || no(normal)  || ||
+|}
+
+
+== forgound color ==
+
+all borswer support.
+
+== border ==
+
+{|
+|| border || IE6 || IE7,8 || chrome || FF ||comment ||
+|-
+|| solid double dotted(3px) dashed || ok || ok || ok || ok || ok ||
+|-
+|| thin(0.5pt) medium(1pt) thick(1.5pt) || ok || ok || ok || ok || ok ||
+|-
+|| merged cell border || ok || ok || ok || ok || perfect border style expor ||
+|}
+
+== cell merge model==
+#support cell merge
+#recalculate merged cell with and height
+
+== fonts ==
+#font family
+#font weight
+#font italic
+#color
+#single underline
+#double underline and any underline for  accounting map to(single underline);
+#line-through
+#sub and sup (use standard html tag)
+
+== formula ==
+#formual value
+
+== cursor ==
+{|
+|| curosr || IE6 || IE7,8 || chrome || FF ||comment ||
+|-
+|| cell|| no(normal) || no(normal) || ok || ok || ok ||
+|}
+
+== hidden row and hidden column ==
+
+1. all support use display none;
